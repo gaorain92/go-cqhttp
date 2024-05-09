@@ -108,7 +108,7 @@ func (hook *LocalHook) SetPath(path string) {
 }
 
 // NewLocalHook 初始化本地日志钩子实现
-func NewLocalHook(args interface{}, consoleFormatter, fileFormatter logrus.Formatter, levels ...logrus.Level) *LocalHook {
+func NewLocalHook(args any, consoleFormatter, fileFormatter logrus.Formatter, levels ...logrus.Level) *LocalHook {
 	hook := &LocalHook{
 		lock: new(sync.Mutex),
 	}
@@ -195,7 +195,8 @@ func (f LogFormat) Format(entry *logrus.Entry) ([]byte, error) {
 		buf.WriteString(colorReset)
 	}
 
-	ret := append([]byte(nil), buf.Bytes()...) // copy buffer
+	ret := make([]byte, len(buf.Bytes()))
+	copy(ret, buf.Bytes()) // copy buffer
 	return ret, nil
 }
 
@@ -204,8 +205,8 @@ const (
 	colorCodeFatal = "\x1b[1;31m" // color.Style{color.Bold, color.Red}.String()
 	colorCodeError = "\x1b[31m"   // color.Style{color.Red}.String()
 	colorCodeWarn  = "\x1b[33m"   // color.Style{color.Yellow}.String()
-	colorCodeInfo  = "\x1b[32m"   // color.Style{color.Green}.String()
-	colorCodeDebug = "\x1b[37m"   // color.Style{color.White}.String()
+	colorCodeInfo  = "\x1b[37m"   // color.Style{color.White}.String()
+	colorCodeDebug = "\x1b[32m"   // color.Style{color.Green}.String()
 	colorCodeTrace = "\x1b[36m"   // color.Style{color.Cyan}.String()
 	colorReset     = "\x1b[0m"
 )
